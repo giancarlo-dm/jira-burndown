@@ -1,0 +1,43 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-family: "Roboto", sans-serif;
+    font-size: 16px;
+    color: #424242; /* Graay 800 */
+}
+
+main {
+    padding: 2rem;
+}
+
+section {
+    margin-top: 1rem;
+}
+
+h1 {
+    text-align: center;
+}
+
+li {
+    line-height: 2;
+}
+
+ul li {
+    margin-left: 1rem;
+    list-style-type: disc;
+}
+
+ul li ul li {
+    margin-left: 1rem;
+    list-style: circle;
+}
+
+.highlight {
+    padding: 0.25rem;
+    border-radius: max(3px, (3 / 16 * 1rem));
+    background-color: #EEEEEE; /* Gray 100 */
+    color: #757575; /* Gray 600 */
+}
