@@ -1,0 +1,82 @@
+@import "./constants/border.constants";
+@import "./constants/colors.constants";
+@import "./constants/fonts.constants";
+@import "helpers/function.helpers";
+@import "helpers/mixins.helpers";
+
+$button-border-radius: $border-radius;
+$button-height: 3rem;
+$button-padding-x: 1rem;
+
+@mixin button-outline($color) {
+    outline: Max(2px, 0.125rem) solid $color;
+}
+
+button {
+    font-size: $font-size;
+    text-transform: uppercase;
+    background-color: $color-primary;
+    color: $color-white;
+    height: $button-height;
+    padding: 0 $button-padding-x;
+    border: none;
+    border-radius: $button-border-radius;
+    @include default-box-shadow($color-primary-dark);
+
+    &:hover {
+        cursor: pointer;
+        background-color: $color-primary-dark;
+    }
+
+    &:focus {
+        @include button-outline($color-primary-dark);
+    }
+
+    &:disabled {
+        background-color: $color-primary-light;
+
+        &:hover {
+            cursor: not-allowed;
+        }
+    }
+
+    &.secondary {
+        background-color: transparent;
+        color: $color-primary;
+        box-shadow: none;
+
+        &:hover {
+            background-color: $color-secondary-light;
+        }
+
+        &:focus {
+            @include button-outline($color-secondary);
+            @include default-box-shadow($color-secondary);
+        }
+
+        &:disabled {
+            color: $color-primary-light;
+
+            &:hover {
+                background-color: transparent;
+            }
+        }
+    }
+
+    &.block {
+        display: block;
+        width: 100%;
+    }
+
+    &.large {
+        font-size: $font-size-large;
+        height: increase-by-factor($button-height, $size-factor);
+        padding: 0 increase-by-factor($button-padding-x, $size-factor);
+    }
+
+    &.small {
+        font-size: $font-size-small;
+        height: decrease-by-factor($button-height, $size-factor);
+        padding: 0 decrease-by-factor($button-padding-x, $size-factor)
+    }
+}

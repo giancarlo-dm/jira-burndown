@@ -4,15 +4,15 @@ import { FC, Fragment, PropsWithChildren } from "react";
  * Conditionally renders its children. Accepts an optional else element to be shown.
  * @param props
  */
-export const If: FC<PropsWithChildren<Props>> = (props) => {
+export const If: FC<Props> = (props) => {
 
     //#region Render
     return (
         <Fragment>
             {props.expression
-                ? props.children
+                ? typeof props.children === "function" ? props.children() : props.children
                 : props.else != null
-                    ? props.else
+                    ? typeof props.else === "function" ? props.else() : props.else
                     : null}
         </Fragment>
     );
@@ -27,8 +27,13 @@ type Props = {
      */
     expression: boolean;
     /**
-     * The else of the if..else statement. JSX.Element to show when the {@link expression} results
-     * in <code>False</code>.
+     * The if..then of if..else statement. JSX.Element or a factory that solves to JSX.Element
+     * to show when the {@link expression} results in <code>true</code>.
      */
-    else?: JSX.Element
+    children: JSX.Element | (() => JSX.Element);
+    /**
+     * The else of the if..else statement. JSX.Element or a factory that solves to JSX.Element
+     * to show when the {@link expression} results in <code>false</code>.
+     */
+    else?: JSX.Element | (() => JSX.Element);
 }

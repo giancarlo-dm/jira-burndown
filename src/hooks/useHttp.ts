@@ -1,14 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { HttpRequestStatusEnum } from "./HttpRequestStatus.enum";
 import { IHttpRequest } from "./IHttpRequest";
+import { RequestConfiguration } from "./RequestConfiguration.type";
+import { RequestParser } from "./RequestParser.type";
 
-export function useHttp(url: string, configuration: RequestInit): IHttpRequest {
+export function useHttp(url: string, configuration: RequestConfiguration, parser?: RequestParser): IHttpRequest {
 
     //#region Initialization
-    const [status, setStatus] = useState<HttpRequestStatusEnum>(HttpRequestStatusEnum.NOT_SENT);
-    const [isSending, setIsSending] = useState<boolean>(false);
-    const [result, setResult] = useState<null | any>(null);
-    const [errors, setErrors] = useState<null | any>(null);
+    const [statusState, setStatusState] = useState<HttpRequestStatusEnum>(HttpRequestStatusEnum.NOT_SENT);
+    const [isSendingState, setIsSendingState] = useState<boolean>(false);
+    const [resultState, setResultState] = useState<null | any>(null);
+    const [errorsState, setErrorsState] = useState<null | any>(null);
     const abortController = useRef<null|AbortController>(new AbortController());
     //#endregion
 
@@ -18,33 +20,56 @@ export function useHttp(url: string, configuration: RequestInit): IHttpRequest {
      */
     const sendRequest = useCallback(
         async () => {
-            setIsSending(true);
-            setErrors(null);
-            setStatus(HttpRequestStatusEnum.SENDING);
+            setIsSendingState(true);
+            setErrorsState(null);
+            setStatusState(HttpRequestStatusEnum.SENDING);
             abortController.current = new AbortController();
             try {
-                const result = await fetch(url, {
+                let encodedQueryParams: string = "";
+                if (configuration.queryParams != null) {
+                    encodedQueryParams += "?";
+                    const keys = Reflect.ownKeys(configuration.queryParams);
+                    for (let i = 0; i < keys.length; i++) {
+                        if (i > 0) {
+                            encodedQueryParams += "&";
+                        }
+                        
+                        encodedQueryParams += encodeURIComponent(String(keys[i]));
+                        encodedQueryParams += "=";
+                        encodedQueryParams += encodeURIComponent(Reflect.get(configuration.queryParams, keys[i]));
+                    }
+                }
+
+                const compiledUrl: string = `${url}${encodedQueryParams}`
+                const response = await fetch(compiledUrl, {
                     ...configuration,
                     signal: abortController.current!.signal
                 });
-                const data = await result.json();
-                setResult(data);
-                setStatus(HttpRequestStatusEnum.FINISHED);
+
+                let data: any;
+                if (parser != null) {
+                    data = await parser(response);
+                }
+                else {
+                    data = await response.json();
+                }
+                setResultState(data);
+                setStatusState(HttpRequestStatusEnum.FINISHED);
                 return data;
             }
             catch (e) {
                 // Only propagate errors if it was not an abort triggered by the user
                 if ((e as DOMException).name !== "AbortError") {
-                    setErrors(e);
-                    setStatus(HttpRequestStatusEnum.ERROR);
+                    setErrorsState(e);
+                    setStatusState(HttpRequestStatusEnum.ERROR);
                     throw e;
                 }
                 else {
-                    setStatus(HttpRequestStatusEnum.ABORTED);
+                    setStatusState(HttpRequestStatusEnum.ABORTED);
                 }
             }
             finally {
-                setIsSending(false);
+                setIsSendingState(false);
             }
         },
         [url, configuration]
@@ -59,6 +84,23 @@ export function useHttp(url: string, configuration: RequestInit): IHttpRequest {
         },
         []
     );
+
+    // /**
+    //  * {@link HttpRequest.setHeader}
+    //  */
+    // const setHeader = useCallback(
+    //     (header: string, value: string) => {
+    //         setConfigurationState(prevState => {
+    //             const state = {...prevState};
+    //             state.headers = state.headers != null 
+    //                 ? {...state.headers, [header]: value}
+    //                 : {[header]: value};
+
+    //             return {...prevState}
+    //         });
+    //     },
+    //     []
+    // );
     //#endregion
 
     //#region Effects
@@ -77,20 +119,21 @@ export function useHttp(url: string, configuration: RequestInit): IHttpRequest {
      * setState.
      */
     const httpRequest = useRef(new HttpRequest(
-        status,
-        isSending,
-        result,
-        errors,
+        statusState,
+        isSendingState,
+        resultState,
+        errorsState,
         sendRequest,
-        cancelRequest
+        cancelRequest,
+        // setHeader
     ));
     //#endregion
 
     //#region Hook Return
-    httpRequest.current.status = status;
-    httpRequest.current.isSending = isSending;
-    httpRequest.current.result = result;
-    httpRequest.current.errors = errors;
+    httpRequest.current.status = statusState;
+    httpRequest.current.isSending = isSendingState;
+    httpRequest.current.result = resultState;
+    httpRequest.current.errors = errorsState;
 
     return httpRequest.current;
     //#endregion
@@ -141,6 +184,7 @@ class HttpRequest implements IHttpRequest {
     //#region Event Handlers
     sendRequest: () => Promise<any>;
     cancelRequest: () => void;
+    // setHeader: (header: string, value: string) => void;
     //#endregion
 
     //#region Constructor
@@ -149,7 +193,8 @@ class HttpRequest implements IHttpRequest {
                 result: any,
                 errors: any,
                 sendRequest: () => Promise<any>,
-                cancelRequest: () => void) {
+                cancelRequest: () => void,
+                /*setHeader: (header: string, value: string) => void*/) {
         this.#status = status;
         this.#isSending = isSending;
         this.#result = result;
@@ -157,6 +202,7 @@ class HttpRequest implements IHttpRequest {
 
         this.sendRequest = sendRequest;
         this.cancelRequest = cancelRequest;
+        // this.setHeader = setHeader;
     }
     //#endregion
 }

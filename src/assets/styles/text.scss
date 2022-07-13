@@ -1,0 +1,27 @@
+@use "./constants/colors.constants" as colors;
+
+.text-align-left {
+    text-align: left;
+}
+
+.text-align-right {
+    text-align: right;
+}
+
+.text-align-center {
+    text-align: center;
+}
+
+.text-align-justify {
+    text-align: justify;
+}
+
+.text-color-danger {
+    color: colors.$color-danger;
+}
+.text-color-warning {
+    color: colors.$color-warning;
+}
+.text-color-success {
+    color: colors.$color-success;
+}

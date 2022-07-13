@@ -1,6 +1,6 @@
 const path = require("path");
 
-const {app, BrowserWindow, dialog, ipcMain, Menu} = require("electron");
+const { app, BrowserWindow, dialog, ipcMain, Menu } = require("electron");
 const isDev = require("electron-is-dev");
 
 const isMac = process.platform === "darwin";
@@ -79,24 +79,30 @@ function createWindow() {
         }
     });
     win.webContents.session.webRequest.onBeforeSendHeaders((details, callback) => {
-        callback({requestHeaders: {Origin: "*", ...details.requestHeaders}});
+        callback({ requestHeaders: { Origin: "*", ...details.requestHeaders } });
     });
     win.webContents.session.webRequest.onHeadersReceived((details, callback) => {
-        callback({
+        const headersReceivedResponse = {
             responseHeaders: {
                 "Access-Control-Allow-Origin": ["*"],
                 "Access-Control-Allow-Methods": ["*"],
                 "Access-Control-Allow-Headers": ["*"],
                 ...details.responseHeaders
             }
-        });
+        }
+       
+        if (details.method === "OPTIONS") {
+            headersReceivedResponse.statusLine = "HTTP/1.1 204"
+        }
+
+        callback(headersReceivedResponse);
     });
 
     if (isDev) {
         win.maximize();
         win.loadURL("http://localhost:3000");
         win.webContents.openDevTools();
-        installExtension(REACT_DEVELOPER_TOOLS, {allowFileAccess: true})
+        installExtension(REACT_DEVELOPER_TOOLS, { allowFileAccess: true })
             .then(name => console.log(`Added Extension:  ${name}`))
             .catch(error => console.log(`An error occurred: , ${error}`));
     }
@@ -109,21 +115,21 @@ function createWindow() {
         {
             role: "fileMenu",
             submenu: [
-                isMac ? {role: "close"} : {role: "quit"}
+                isMac ? { role: "close" } : { role: "quit" }
             ]
         },
         {
             role: "viewMenu",
             submenu: [
-                {role: "reload"},
-                {role: "forceReload"},
-                {role: "toggleDevTools"},
-                {type: "separator"},
-                {role: "resetZoom"},
-                {role: "zoomIn"},
-                {role: "zoomOut"},
-                {type: "separator"},
-                {role: "togglefullscreen"}
+                { role: "reload" },
+                { role: "forceReload" },
+                { role: "toggleDevTools" },
+                { type: "separator" },
+                { role: "resetZoom" },
+                { role: "zoomIn" },
+                { role: "zoomOut" },
+                { type: "separator" },
+                { role: "togglefullscreen" }
             ]
         },
         {

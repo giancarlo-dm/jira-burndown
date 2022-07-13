@@ -1,0 +1,22 @@
+$size-factor: 0.25;
+
+/**
+ * Increase a given dimension by a given factor.
+ */
+@function increase-by-factor($dimension, $factor) {
+    @return $dimension + ($dimension * $factor);
+}
+
+/**
+ * Decrease a given dimension by a given factor.
+ */
+@function decrease-by-factor($dimension, $factor) {
+    @return $dimension - ($dimension * $factor);
+}
+
+/**
+ * Calculate a dimension removing the border width and padding
+ */
+@function calc-dimension($dimension, $border-width, $padding) {
+    @return calc(#{$dimension} - (#{$border-width} * 2) - (#{$padding} * 2));
+}

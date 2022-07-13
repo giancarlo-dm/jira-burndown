@@ -1,0 +1,56 @@
+// Color Palette obtained from https://material.io/design/color/the-color-system.html#tools-for-picking-colors
+
+$red_100: #FFCDD2;
+$red_200: #EF9A9A;
+$red_400: #EF5350;
+$red_600: #E53935;
+$red_800: #C62828;
+
+$green_100: #C8E6C9;
+$green_200: #A5D6A7;
+$green_400: #66BB6A;
+$green_600: #43A047;
+$green_800: #43A047;
+
+$blue_100: #BBDEFB;
+$blue_200: #90CAF9;
+$blue_400: #42A5F5;
+$blue_600: #1E88E5;
+$blue_800: #1565C0;
+
+$amber_100: #FFECB3;
+$amber_200: #FFE082;
+$amber_400: #FFCA28;
+$amber_600: #FFB300;
+$amber_800: #FF8F00;
+
+$gray_100: #F5F5F5;
+$gray_200: #EEEEEE;
+$gray_400: #BDBDBD;
+$gray_600: #757575;
+$gray_800: #424242;
+
+$color_black: #000000;
+$color_white: #FFFFFF;
+
+$color-background: #FAFAFA;
+
+$color-primary: $blue_600;
+$color-primary-light: $blue_200;
+$color-primary-dark: $blue_800;
+
+$color-secondary: $gray_600;
+$color-secondary-light: $gray_200;
+$color-secondary-dark: $gray_800;
+
+$color-danger: $red_600;
+$color-danger-light: $red_200;
+$color-danger-dark: $red_800;
+
+$color-warning: $amber_600;
+$color-warning-light: $amber_200;
+$color-warning-dark: $amber_800;
+
+$color-success: $green_600;
+$color-success-light: $green_200;
+$color-success-dark: $green_800;

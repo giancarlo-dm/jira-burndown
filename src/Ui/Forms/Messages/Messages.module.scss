@@ -1,0 +1,24 @@
+@import "../../../assets/styles/constants/colors.constants";
+@import "../../../assets/styles/constants/fonts.constants";
+
+.invalidMessagesContainer {
+    display: flex;
+    position: absolute;
+}
+
+.invalidMessage {
+    margin-top: 0.25rem;
+    color: $color-danger;
+    font-size: $font-size-small;
+
+    &:not(:first-of-type) {
+        margin-left: 0.25rem;
+    }
+}
+
+.validMessage {
+    margin-top: 0.25rem;
+    color: $color-success;
+    position: absolute;
+    font-size: $font-size-small;
+}

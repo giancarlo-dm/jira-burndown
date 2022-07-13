@@ -1,0 +1,14 @@
+@import "./constants/colors.constants";
+
+a {
+    color: $color-primary;
+
+    &:hover {
+        cursor: pointer;
+        color: $color-primary-dark;
+    }
+
+    &:visited {
+        color: $color-primary-dark
+    }
+}

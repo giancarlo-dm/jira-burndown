@@ -1,5 +1,7 @@
 import { Fragment } from "react";
+
 import { Primitives, RequiredKeys } from "../../Helpers";
+import { LoopedRenderFn } from "../../Helpers";
 
 /**
  * Loops into an array of objects outputting the JSX.Element provided on the children function.
@@ -82,15 +84,7 @@ type Props<T> = {
      * @param isFirst If the index is the last position of the array.
      * @param isLast If the index is the first position of the array.
      */
-    children: (
-        item: T,
-        index: number,
-        length: number,
-        isOdd: boolean,
-        isEven: boolean,
-        isFirst: boolean,
-        isLast: boolean
-    ) => JSX.Element;
+    children: LoopedRenderFn<T>;
     /**
      * The attribute to be used as key or a factory to generate a value. If not set, will cause the
      * React warning about keys.

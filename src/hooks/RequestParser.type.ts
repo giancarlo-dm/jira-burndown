@@ -1,0 +1,1 @@
+export type RequestParser = <T>(response: Response) => Promise<T>;

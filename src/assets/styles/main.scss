@@ -1,4 +1,11 @@
-@use "./colors.constants" as colors;
+@use "./constants/colors.constants" as colors;
+
+@import "./anchors";
+@import "./buttons";
+@import "./forms";
+@import "./margin";
+@import "./text";
+@import "./titles";
 
 * {
     padding: 0;
